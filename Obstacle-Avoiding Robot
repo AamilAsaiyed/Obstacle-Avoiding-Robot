@@ -1,0 +1,65 @@
+#define trigPin 2
+#define echoPin 3
+#define in1 4
+#define in2 5
+#define in3 6
+#define in4 7
+#define enA 11
+#define enB 10
+
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(in3, OUTPUT);
+  pinMode(in4, OUTPUT);
+  pinMode(enA, OUTPUT);
+  pinMode(enB, OUTPUT);
+  
+  // Enable both motors
+  analogWrite(enA, 200);  // Adjust speed as needed (0-255)
+  analogWrite(enB, 200);  // Adjust speed as needed (0-255)
+  
+  Serial.begin(9600);
+}
+
+void loop() {
+  long duration, distance;
+  
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+  duration = pulseIn(echoPin, HIGH);
+  distance = duration * 0.034 / 2;
+  
+  Serial.print("Distance: ");
+  Serial.println(distance);
+  
+  if (distance < 20) {
+    // Stop motors if obstacle is detected
+    stopMotors();
+  } else {
+    // Move forward
+    moveForward();
+  }
+  
+  delay(100);
+}
+
+void moveForward() {
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, HIGH);
+  digitalWrite(in4, LOW);
+}
+
+void stopMotors() {
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, LOW);
+}
